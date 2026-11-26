@@ -53,7 +53,7 @@ def main(data_path=DATA):
     for name,model in models.items():
         model.fit(Xtr,ytr); ptr=model.predict(Xtr); pte=model.predict(Xte)
         metrics[name]={"train":regression_metrics(ytr,ptr),"test":regression_metrics(yte,pte)}; preds[name]=pte
-        scores=cross_validate(model,Xtr,ytr,groups=gtr,cv=cv,n_jobs=-1,scoring={"mae":"neg_mean_absolute_error","rmse":"neg_root_mean_squared_error","r2":"r2"})
+        scores=cross_validate(model,Xtr,ytr,groups=gtr,cv=cv,n_jobs=1,scoring={"mae":"neg_mean_absolute_error","rmse":"neg_root_mean_squared_error","r2":"r2"})
         cvout[name]={"MAE_mean":float(-scores["test_mae"].mean()),"MAE_std":float(scores["test_mae"].std()),"RMSE_mean":float(-scores["test_rmse"].mean()),"R2_mean":float(scores["test_r2"].mean())}
         joblib.dump(model,MODELS/("linear_regression.joblib" if name=="Linear Regression" else "random_forest.joblib"))
     summary={"dataset_rows":len(df),"split":{"method":"GroupShuffleSplit by seven ingredient quantities","train_rows":len(tr),"test_rows":len(te),"train_mixtures":len(set(groups[tr])),"test_mixtures":len(set(groups[te])),"seed":SEED},"exact_duplicate_rows":int(df.duplicated().sum()),"repeated_mixture_age_rows":int(df.duplicated(subset=FEATURES).sum()),"unique_mixtures":int(len(set(groups))),"metrics":metrics,"group_cv":cvout}
@@ -68,7 +68,7 @@ def main(data_path=DATA):
     fig.tight_layout(); fig.savefig(RESULTS/"prediction_diagnostics.png",dpi=160); plt.close(fig)
     rf=models["Random Forest"]; fi=pd.DataFrame({"feature":FEATURES,"importance":rf.feature_importances_}).sort_values("importance",ascending=False)
     fi.to_csv(RESULTS/"feature_importance.csv",index=False)
-    plt.figure(figsize=(9,5)); sns.barplot(data=fi,x="importance",y="feature"); plt.tight_layout(); plt.savefig(RESULTS/"feature_importance.png",dpi=160); plt.close()
+    fig,ax=plt.subplots(figsize=(9,5)); ax.barh(fi["feature"],fi["importance"]); ax.invert_yaxis(); ax.set_xlabel("Impurity-based importance"); ax.set_ylabel("Feature"); fig.tight_layout(); fig.savefig(RESULTS/"feature_importance.png",dpi=160); plt.close(fig)
     pd.DataFrame({"feature":FEATURES+["intercept"],"coefficient":list(models["Linear Regression"].coef_)+[models["Linear Regression"].intercept_]}).to_csv(RESULTS/"linear_regression_coefficients.csv",index=False)
     print(json.dumps(summary,indent=2))
 if __name__=="__main__":
