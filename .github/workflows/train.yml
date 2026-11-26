@@ -1,0 +1,77 @@
+name: ConcreteAI model training
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "src/**"
+      - "requirements.txt"
+      - ".github/workflows/train.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: concreteai-training-main
+  cancel-in-progress: false
+
+jobs:
+  train:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      - name: Install dependencies
+        run: python -m pip install --upgrade pip && pip install -r requirements.txt
+
+      - name: Download and validate official UCI dataset
+        run: python src/prepare_concrete_dataset.py --output data/concrete_strength.csv
+
+      - name: Train and evaluate models
+        run: python src/train.py
+
+      - name: Publish metrics in job summary
+        if: always()
+        run: |
+          if [ -f results/metrics.json ]; then
+            echo "## ConcreteAI — Evaluation Results" >> "$GITHUB_STEP_SUMMARY"
+            cat results/metrics.json >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "Training did not produce results/metrics.json." >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+      - name: Upload reproducible training artifacts
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: concreteai-training-artifacts
+          path: |
+            models/
+            results/
+            data/concrete_strength.csv
+          retention-days: 30
+
+      - name: Commit trained models and evaluation results
+        if: success()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add models/ results/
+          if git diff --cached --quiet; then
+            echo "No artifact changes to commit."
+          else
+            git commit -m "Add UCI-trained models and evaluation results"
+            git push origin HEAD:main
+          fi
