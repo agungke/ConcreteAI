@@ -21,6 +21,9 @@ Training creates metrics, grouped cross-validation, predictions, EDA charts, dia
 ## Validation
 Fixed seed 42. Holdout uses GroupShuffleSplit (80/20) grouped by the seven ingredient quantities, ensuring different ages/replicates of the same mixture cannot cross train/test. Five-fold GroupKFold runs on training mixtures only. Metrics: MAE, RMSE and R². Exact duplicates are reported, not silently removed.
 
+## Verified experiment
+The current UCI training run is documented in [`docs/analysis.md`](docs/analysis.md). Actual outputs are stored in `results/`: metrics, model comparison, test predictions, descriptive statistics, correlation matrix, diagnostic charts, coefficients and feature importance. Trained model files are stored in `models/`. The training workflow downloads the official UCI CSV at runtime and publishes model/results artifacts.
+
 ## Mathematical basis
 Linear Regression minimizes ordinary least squares: min Σ(yᵢ − β₀ − xᵢᵀβ)². Random Forest averages decision-tree predictions trained with bootstrap samples and randomized feature subsets. Feature importance is descriptive, not causal.
 
