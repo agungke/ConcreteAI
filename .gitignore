@@ -6,3 +6,9 @@ venv/
 .env
 .DS_Store
 .streamlit/secrets.toml
+
+# Local UCI dataset (downloaded by the acquisition script)
+data/concrete_strength.csv
+
+# Local training cache
+*.tmp
