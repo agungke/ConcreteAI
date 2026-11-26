@@ -1,0 +1,54 @@
+{
+  "dataset_rows": 1030,
+  "split": {
+    "method": "GroupShuffleSplit by seven ingredient quantities",
+    "train_rows": 815,
+    "test_rows": 215,
+    "train_mixtures": 341,
+    "test_mixtures": 86,
+    "seed": 42
+  },
+  "exact_duplicate_rows": 25,
+  "repeated_mixture_age_rows": 38,
+  "unique_mixtures": 427,
+  "metrics": {
+    "Linear Regression": {
+      "train": {
+        "MAE": 8.21744110485178,
+        "RMSE": 10.306013274162343,
+        "R2": 0.6015153005668622
+      },
+      "test": {
+        "MAE": 8.383240488211634,
+        "RMSE": 10.736105778584948,
+        "R2": 0.6452940322050652
+      }
+    },
+    "Random Forest": {
+      "train": {
+        "MAE": 1.229377885386193,
+        "RMSE": 1.9649074951953214,
+        "R2": 0.9855151342607253
+      },
+      "test": {
+        "MAE": 4.033210058863626,
+        "RMSE": 5.88860719646313,
+        "R2": 0.8932912327948928
+      }
+    }
+  },
+  "group_cv": {
+    "Linear Regression": {
+      "MAE_mean": 8.340765186712213,
+      "MAE_std": 0.5039975025070788,
+      "RMSE_mean": 10.469341717273753,
+      "R2_mean": 0.5760711111822705
+    },
+    "Random Forest": {
+      "MAE_mean": 4.79321130035323,
+      "MAE_std": 0.4915398213220981,
+      "RMSE_mean": 6.515268247720563,
+      "R2_mean": 0.8365539208681299
+    }
+  }
+}
