@@ -30,5 +30,12 @@ Linear Regression minimizes ordinary least squares: min Σ(yᵢ − β₀ − x�
 ## Safety and limitations
 Historical dataset and limited sample size constrain generalization to unseen materials, suppliers, curing regimes and modern construction practice. This app is an academic prototype, not a substitute for laboratory testing, applicable standards, structural design or engineering judgement.
 
+## Project documentation
+- [Final report draft](docs/final_report.md)
+- [Actual model analysis](docs/analysis.md)
+- [Technical notes](docs/technical_notes.md)
+- [Presentation Q&A preparation](docs/presentation_qa.md)
+- [Team contribution and peer reflection template](docs/team_contribution_template.md)
+
 ## Team contribution
 Record each member's work using actual commits, pull requests and peer confirmation. Never fabricate contribution history.
